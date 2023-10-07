@@ -60,11 +60,11 @@ class Body extends StatelessWidget {
             children: <Widget>[
               SocialIcon(
                 iconSrc: "assets/icons/facebook.svg",
-                press : (){},
+                press: () {},
               ),
               SocialIcon(
                 iconSrc: "assets/icons/google-plus.svg",
-                press : (){},
+                press: () {},
               ),
             ],
           )
@@ -73,4 +73,3 @@ class Body extends StatelessWidget {
     );
   }
 }
-

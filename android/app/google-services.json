@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "476163344647",
+    "project_id": "fir-app-6233b",
+    "storage_bucket": "fir-app-6233b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476163344647:android:172c2c4f569326184fdda2",
+        "android_client_info": {
+          "package_name": "com.example.whip_up"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBopbljvmRvSIaaOTgvzRlUezW5YzmdM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
