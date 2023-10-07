@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
+    options: const FirebaseOptions(
       apiKey: "AIzaSyAFK2EMtqjKI8nB1ztentSBKj0BoRHIrsk",
       appId: "1:325982503438:android:4ba513fb84b7ad6baf725f",
       messagingSenderId: "325982503438",
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: welcomeScreen(),
+      home: const welcomeScreen(),
     );
   }
 }

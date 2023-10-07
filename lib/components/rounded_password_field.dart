@@ -29,7 +29,7 @@ class _RoundedPasswordFieldState extends State<RoundedPasswordField> {
         validator: widget.validator, // Set the validator here
         decoration: InputDecoration(
           hintText: "Password",
-          icon: Icon(
+          icon: const Icon(
             Icons.lock,
             color: kPrimaryColor,
           ),
