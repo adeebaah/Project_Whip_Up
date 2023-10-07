@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whip_up/Screens/Login/components/background.dart';
@@ -6,6 +7,7 @@ import 'package:whip_up/components/already_have_an_account_check.dart';
 import 'package:whip_up/components/rounded_button.dart';
 import 'package:whip_up/components/rounded_input_field.dart';
 import 'package:whip_up/components/rounded_password_field.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class Body extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -14,6 +16,8 @@ class Body extends StatelessWidget {
   final String password;
   final ValueChanged<String> updateEmail;
   final ValueChanged<String> updatePassword;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   Body({
     Key? key,
@@ -22,6 +26,26 @@ class Body extends StatelessWidget {
     required this.updateEmail,
     required this.updatePassword,
   }) : super(key: key); // Create a GlobalKey<FormState>
+
+  Future<void> loginUser(BuildContext context) async {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        print('Login successful for ${userCredential.user?.email}');
+        // Navigate to your home screen or wherever you want after successful login
+      } on FirebaseAuthException catch (e) {
+        print('Failed to sign in: $e');
+        // Handle login errors, e.g., show a snackbar or an error message
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +74,9 @@ class Body extends StatelessWidget {
             RoundedInputField(
               hintText: "Your Email",
               icon: Icons.person,
-              onChanged: (value) {},
+              onChanged: (value) {
+                _emailController.text = value;
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email address';
@@ -62,7 +88,9 @@ class Body extends StatelessWidget {
               },
             ),
             RoundedPasswordField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                _passwordController.text = value;
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
@@ -76,9 +104,7 @@ class Body extends StatelessWidget {
               text: "Login",
               press: () {
                 if (_formKey.currentState!.validate()) {
-                  // If the form is valid, perform the login action
-                  // For now, we'll just print a message
-                  print('Form is valid, perform login action');
+                  loginUser(context);
                 }
               },
             ),

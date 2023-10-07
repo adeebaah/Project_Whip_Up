@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whip_up/Screens/Login/login_screen.dart';
 import 'package:whip_up/Screens/Signup/components/background.dart';
 import 'package:whip_up/Screens/Signup/components/or_divider.dart';
 import 'package:whip_up/Screens/Signup/components/social_icon.dart';
+import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 import 'package:whip_up/components/already_have_an_account_check.dart';
 import 'package:whip_up/components/rounded_button.dart';
 import 'package:whip_up/components/rounded_input_field.dart';
@@ -20,6 +22,9 @@ class Body extends StatelessWidget {
   final ValueChanged<String> updateEmail;
   final ValueChanged<String> updatePassword;
 
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
+
   Body({
     Key? key,
     required this.email,
@@ -27,6 +32,26 @@ class Body extends StatelessWidget {
     required this.updateEmail,
     required this.updatePassword,
   }) : super(key: key);
+
+  Future<bool> isEmailInUse(String email) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: 'randomPassword123', // A temporary random password
+      );
+      // If createUserWithEmailAndPassword succeeds, delete the temporary user
+      await userCredential.user?.delete();
+      return false; // Email is not in use
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return true; // Email is already in use
+      }
+      // Handle other exceptions
+      print('Error checking email existence: $e');
+      return false; // Return false in case of an error
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +75,9 @@ class Body extends StatelessWidget {
             RoundedInputField(
               hintText: "Your Email",
               icon: Icons.person,
-              onChanged: (value) {},
+              onChanged: (value) {
+                _emailTextController.text = value;
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email address';
@@ -62,7 +89,9 @@ class Body extends StatelessWidget {
               },
             ),
             RoundedPasswordField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                _passwordTextController.text = value;
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
@@ -74,11 +103,35 @@ class Body extends StatelessWidget {
             ),
             RoundedButton(
               text: "Signup",
-              press: () {
+              press: () async {
                 if (_formKey.currentState!.validate()) {
-                  // If the form is valid, perform the login action
-                  // For now, we'll just print a message
-                  print('Form is valid, perform signup action');
+                  bool emailInUse =
+                      await isEmailInUse(_emailTextController.text);
+                  if (emailInUse) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Email is already in use.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  } else {
+                    try {
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text,
+                      );
+                      print('Form is valid, performed signup action');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => welcomeScreen(),
+                        ),
+                      );
+                    } on FirebaseAuthException catch (e) {
+                      print('Error signing up: $e');
+                    }
+                  }
                 }
               },
             ),
