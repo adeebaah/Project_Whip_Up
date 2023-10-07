@@ -2,15 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 import 'package:whip_up/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: FirebaseOptions(
-          apiKey: "AIzaSyCBopbljvmRvSIaaOTgvzRlUezW5YzmdM8",
-          appId: "1:476163344647:android:172c2c4f569326184fdda2",
-          messagingSenderId: "476163344647",
-          projectId: "fir-app-6233b"));
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyAFK2EMtqjKI8nB1ztentSBKj0BoRHIrsk",
+      appId: "1:325982503438:android:4ba513fb84b7ad6baf725f",
+      messagingSenderId: "325982503438",
+      projectId: "whip-up-123",
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: welcomeScreen(),
+      home: const welcomeScreen(),
     );
   }
 }

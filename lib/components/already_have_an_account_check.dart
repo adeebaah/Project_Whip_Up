@@ -5,7 +5,9 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
   final bool login;
   final VoidCallback press;
   const AlreadyHaveAnAccountCheck({
-    super.key,  this.login = true, required this.press,
+    super.key,
+    this.login = true,
+    required this.press,
   });
 
   @override
@@ -14,14 +16,14 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-         login ? "Dont Have an Account ?" : "Already have an Account ?",
-          style: TextStyle(color: kPrimaryColor),
+          login ? "Don't Have an Account?" : "Already have an Account?",
+          style: const TextStyle(color: kPrimaryColor),
         ),
         GestureDetector(
           onTap: press,
           child: Text(
-            login ? "Sign Up" :  "Sign in",
-            style: TextStyle(
+            login ? "Sign Up" : "Sign in",
+            style: const TextStyle(
               color: kPrimaryColor,
               fontWeight: FontWeight.bold,
             ),
