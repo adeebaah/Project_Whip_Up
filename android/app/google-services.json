@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "325982503438",
+    "project_id": "whip-up-123",
+    "storage_bucket": "whip-up-123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325982503438:android:4ba513fb84b7ad6baf725f",
+        "android_client_info": {
+          "package_name": "com.example.whip_up"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFK2EMtqjKI8nB1ztentSBKj0BoRHIrsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

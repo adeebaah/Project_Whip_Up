@@ -28,7 +28,7 @@ class Body extends StatelessWidget {
           ),
           SizedBox(height: size.height * 0.05),
           RoundedButton(
-            text: "LOGIN",
+            text: "Login",
             press: () {
               Navigator.push(
                 context,
@@ -44,14 +44,16 @@ class Body extends StatelessWidget {
             text: "Sign Up",
             color: kPrimaryColor,
             textColor: Colors.black,
-            press: () {Navigator.push(
+            press: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) {
                     return SignupScreen();
                   },
                 ),
-              );},
+              );
+            },
           ),
         ],
       ),
