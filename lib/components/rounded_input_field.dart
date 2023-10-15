@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whip_up/components/text_field_container.dart';
 import 'package:whip_up/constants.dart';
 
+
 class RoundedInputField extends StatelessWidget {
   final String hintText;
   final IconData icon;

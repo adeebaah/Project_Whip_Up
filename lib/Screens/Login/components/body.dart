@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whip_up/Screens/Login/components/background.dart';
@@ -7,124 +6,134 @@ import 'package:whip_up/components/already_have_an_account_check.dart';
 import 'package:whip_up/components/rounded_button.dart';
 import 'package:whip_up/components/rounded_input_field.dart';
 import 'package:whip_up/components/rounded_password_field.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:whip_up/components/text_field_container.dart';
+import 'package:whip_up/constants.dart';
+import 'package:whip_up/Screens/Signup/api_service.dart';
+import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 
-class Body extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
 
-  final String email;
-  final String password;
-  final ValueChanged<String> updateEmail;
-  final ValueChanged<String> updatePassword;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  Body({
-    Key? key,
-    required this.email,
-    required this.password,
-    required this.updateEmail,
-    required this.updatePassword,
-  }) : super(key: key); // Create a GlobalKey<FormState>
-
-  Future<void> loginUser(BuildContext context) async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
-
-    if (_formKey.currentState!.validate()) {
-      try {
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        print('Login successful for ${userCredential.user?.email}');
-        // Navigate to your home screen or wherever you want after successful login
-      } on FirebaseAuthException catch (e) {
-        print('Failed to sign in: $e');
-        // Handle login errors, e.g., show a snackbar or an error message
-      }
-    }
-  }
+class _BodyState extends State<Body> {
+  String _email = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Background(
-      child: Form(
-        // Wrap your content with a Form widget
-        key: _formKey, // Assign the GlobalKey
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "LogIn",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: size.height * 0.03,
-            ),
-            SvgPicture.asset(
-              "assets/icons/login.svg",
-              height: size.height * 0.35,
-            ),
-            SizedBox(
-              height: size.height * 0.03,
-            ),
-            RoundedInputField(
-              hintText: "Your Email",
-              icon: Icons.person,
-              onChanged: (value) {
-                _emailController.text = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email address';
-                } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
-                    .hasMatch(value)) {
-                  return 'Enter a valid email';
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "LogIn",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          SvgPicture.asset(
+            "assets/icons/login.svg",
+            height: size.height * 0.35,
+          ),
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          // RoundedInputField(
+          //   hintText: "Your Email",
+          //   onChanged: (value) {},
+          // ),
+          RoundedInputField(
+            hintText: "Your Email",
+            icon: Icons.email, // This is the missing argument you need to add.
+            onChanged: (value) {
+              setState(() {
+                _email = value;
+              });
+            },
+          ),
+          RoundedPasswordField(
+            onChanged: (value) {
+              setState(() {
+                _password = value;
+              });
+            },
+          ),
+          // RoundedPasswordField(
+          //   onChanged: (value) {},
+          // ),
+
+          // RoundedButton(
+          //   text: "LogIn",
+          //   press: () {},
+          // ),
+          //  RoundedButton(
+          //     text: "LOGIN",
+          //     press: () async {
+          //       final apiService = ApiService();
+          //       try {
+          //         var result = await apiService.loginUser(_email, _password);
+          //         print(result);
+          //         // Handle the response from your backend as needed.
+          //       } catch (error) {
+          //         print(error);
+          //         // Show an error message to the user, maybe using a Snackbar.
+          //       }
+          //     },
+          //   ),
+
+          RoundedButton(
+            text: "LOGIN",
+            press: () async {
+              final apiService = ApiService();
+              try {
+                var result = await apiService.loginUser(_email, _password);
+                print(result);
+                // Assuming 'result' contains a message or status indicating a successful login
+                // You should replace 'successMessage' with the actual success response you expect from your API
+                if (result['message'] == 'Login Successful') {
+                  // Navigate to WelcomeScreen after successful login
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => welcomeScreen(),
+                    ),
+                  );
+                } else {
+                  // Handle other responses from your backend as needed, e.g., showing an error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Login Failed! Please try again.')),
+                  );
                 }
-                return null; // Return null if validation passes
-              },
-            ),
-            RoundedPasswordField(
-              onChanged: (value) {
-                _passwordController.text = value;
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a password';
-                } else if (value.length < 6) {
-                  return 'Password must be at least 6 characters long';
-                }
-                return null; // Return null if validation passes
-              },
-            ),
-            RoundedButton(
-              text: "Login",
-              press: () {
-                if (_formKey.currentState!.validate()) {
-                  loginUser(context);
-                }
-              },
-            ),
-            SizedBox(
-              height: size.height * 0.03,
-            ),
-            AlreadyHaveAnAccountCheck(
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignupScreen();
-                    },
-                  ),
+              } catch (error) {
+                print(error);
+                // Show an error message to the user, using a Snackbar.
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text('An error occurred. Please try again.')),
                 );
-              },
-            )
-          ],
-        ),
+              }
+            },
+          ),
+
+          SizedBox(
+            height: size.height * 0.03,
+          ),
+          AlreadyHaveAnAccountCheck(
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return SignupScreen();
+                  },
+                ),
+              );
+            },
+          )
+        ],
       ),
     );
   }
