@@ -73,7 +73,11 @@ class _BodyState extends State<Body> {
           RoundedButton(
             text: "SIGNUP",
             press: () async {
-              // Validate email and password before sending to API.
+              // Validate email using a regular expression for a valid email format.
+              RegExp emailRegExp = RegExp(
+                r"^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+              );
+
               if (_email.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -82,7 +86,20 @@ class _BodyState extends State<Body> {
                   ),
                 );
                 return; // Exit the function early.
+              } else if (!emailRegExp.hasMatch(_email)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Invalid email format.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return; // Exit the function early for invalid email format.
               }
+
+              // Validate password for length, capital letter, and digit.
+              RegExp passwordRegExp = RegExp(
+                r"^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{6,}$",
+              );
 
               if (_password.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -92,15 +109,15 @@ class _BodyState extends State<Body> {
                   ),
                 );
                 return; // Exit the function early.
-              } else if (_password.length < 6) {
+              } else if (!passwordRegExp.hasMatch(_password)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content:
-                        Text('Password must be at least 6 characters long.'),
+                    content: Text(
+                        'Password must be at least 6 characters long and contain at least 1 capital letter and 1 digit.'),
                     backgroundColor: Colors.red,
                   ),
                 );
-                return; // Exit the function early.
+                return; // Exit the function early for invalid password.
               }
 
               // If validations pass, proceed to call the API.
@@ -135,7 +152,6 @@ class _BodyState extends State<Body> {
                 );
               }
             },
-            
           ),
           //
 
