@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whip_up/Screens/Login/login_screen.dart';
 import 'package:whip_up/Screens/Signup/signup_screen.dart';
 import 'package:whip_up/Screens/Welcome/components/background.dart';
