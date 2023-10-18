@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whip_up/Screens/Login/components/background.dart';
 import 'package:whip_up/Screens/Signup/signup_screen.dart';
+import 'package:whip_up/Screens/forgot_pass_screen.dart';
 import 'package:whip_up/components/already_have_an_account_check.dart';
 import 'package:whip_up/components/rounded_button.dart';
 import 'package:whip_up/components/rounded_input_field.dart';
@@ -92,7 +93,6 @@ class _BodyState extends State<Body> {
                 var result = await apiService.loginUser(_email, _password);
                 print(result);
                 // Assuming 'result' contains a message or status indicating a successful login
-                // You should replace 'successMessage' with the actual success response you expect from your API
                 if (result['message'] == 'Login Successful') {
                   // Navigate to WelcomeScreen after successful login
                   Navigator.pushReplacement(
@@ -101,18 +101,17 @@ class _BodyState extends State<Body> {
                       builder: (context) => welcomeScreen(),
                     ),
                   );
-                } else {
-                  // Handle other responses from your backend as needed, e.g., showing an error message
+                } else if (result['message'] == 'Please verify your email') {
+                  // Show a message to the user indicating that they need to verify their email
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Login Failed! Please try again.')),
+                    SnackBar(content: Text(result['message'])),
                   );
                 }
               } catch (error) {
                 print(error);
                 // Show an error message to the user, using a Snackbar.
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text('An error occurred. Please try again.')),
+                  SnackBar(content: Text(error.toString())),
                 );
               }
             },
@@ -132,7 +131,25 @@ class _BodyState extends State<Body> {
                 ),
               );
             },
-          )
+          ),
+
+          GestureDetector(
+            onTap: () {
+              // Navigate to ForgotPasswordScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ForgotPasswordScreen(context),
+                ),
+              );
+            },
+            child: Text(
+              'Forgot Password?',
+              style: TextStyle(
+                color: Colors.blue, // Set the color of the link
+              ),
+            ),
+          ),
         ],
       ),
     );
