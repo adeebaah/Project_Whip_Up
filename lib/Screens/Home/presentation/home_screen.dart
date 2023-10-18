@@ -3,8 +3,8 @@ import 'package:whip_up/core/theme/app_color.dart';
 import 'package:whip_up/Screens/home/model/recipe_model.dart';
 import 'package:whip_up/Screens/home/presentation/widget/recipe_item.dart';
 
-class HomeScrenn extends StatelessWidget {
-  const HomeScrenn({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

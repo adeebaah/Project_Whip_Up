@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:whip_up/Screens/reset_pass_screen.dart';
-import 'package:numberpicker/numberpicker.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -38,6 +37,13 @@ class ForgotPasswordScreen extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => ResetPasswordScreen(email: email),
+        ),
+      );
+    } else if (response.statusCode == 409) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You have not registered with this email.'),
+          backgroundColor: Colors.red,
         ),
       );
     } else {
