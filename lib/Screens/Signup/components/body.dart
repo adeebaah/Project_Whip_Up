@@ -13,6 +13,7 @@ import 'package:whip_up/components/rounded_password_field.dart';
 // import 'package:whip_up/constants.dart';
 import 'package:whip_up/Screens/Signup/api_service.dart';
 import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
+import 'package:whip_up/Screens/verify_screen.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   String _email = "";
   String _password = "";
+  List<String> errorMessages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -73,27 +75,16 @@ class _BodyState extends State<Body> {
           RoundedButton(
             text: "SIGNUP",
             press: () async {
+              errorMessages.clear();
               // Validate email using a regular expression for a valid email format.
               RegExp emailRegExp = RegExp(
-                r"^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
               );
 
               if (_email.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Email is required.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return; // Exit the function early.
+                errorMessages.add('Email is required.');
               } else if (!emailRegExp.hasMatch(_email)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Invalid email format.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return; // Exit the function early for invalid email format.
+                errorMessages.add('Invalid email format.');
               }
 
               // Validate password for length, capital letter, and digit.
@@ -102,22 +93,20 @@ class _BodyState extends State<Body> {
               );
 
               if (_password.isEmpty) {
+                errorMessages.add('Password is required.');
+              } else if (!passwordRegExp.hasMatch(_password)) {
+                errorMessages.add(
+                    'Password must be at least 6 characters long and contain at least 1 capital letter and 1 digit.');
+              }
+
+              if (errorMessages.isNotEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Password is required.'),
+                    content: Text(errorMessages.join('\n')),
                     backgroundColor: Colors.red,
                   ),
                 );
                 return; // Exit the function early.
-              } else if (!passwordRegExp.hasMatch(_password)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Password must be at least 6 characters long and contain at least 1 capital letter and 1 digit.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return; // Exit the function early for invalid password.
               }
 
               // If validations pass, proceed to call the API.
@@ -129,7 +118,8 @@ class _BodyState extends State<Body> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => welcomeScreen(),
+                    builder: (context) =>
+                        VerifyScreen(userId: response["userId"]),
                   ),
                 );
               } else if (response['message'] == 'Customer Exists') {
