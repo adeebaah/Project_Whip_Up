@@ -2,7 +2,19 @@
 // import 'package:whip_up/Screens/GetStarted/presentation/get_started_screen.dart';
 // import 'package:whip_up/Screens/home/presentation/home_screen.dart';
 // import 'app_route_name.dart';
+// import 'package:flutter/material.dart';
+// import 'package:whip_up/Screens/GetStarted/presentation/get_started_screen.dart';
+// import 'package:whip_up/Screens/home/presentation/home_screen.dart';
+// import 'app_route_name.dart';
 
+// class AppRoute {
+//   static Route<dynamic>? generate(RouteSettings settings) {
+//     switch (settings.name) {
+//       case AppRouteName.getStarted:
+//         return MaterialPageRoute(
+//           builder: (_) => const GetStartedScreen(),
+//           settings: settings,
+//         );
 // class AppRoute {
 //   static Route<dynamic>? generate(RouteSettings settings) {
 //     switch (settings.name) {
@@ -29,6 +41,9 @@
 //         );
 //     }
 
+//     return null;
+//   }
+// }
 //     return null;
 //   }
 // }
