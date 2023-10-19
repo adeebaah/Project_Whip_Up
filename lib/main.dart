@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whip_up/Screens/AddRecipe/add_recipe_screen.dart';
 // import 'package:whip_up/Screens/GetStarted/presentation/get_started_screen.dart';
 import 'package:whip_up/Screens/Home/presentation/home_screen.dart';
+import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 // import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 import 'package:whip_up/constants.dart';
 import 'package:whip_up/core/route/app_route_name.dart';
@@ -23,11 +24,11 @@ class MyApp extends StatelessWidget {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: RecipeDetailsPage(),
-      routes: {
-        AppRouteName.home: (context) => HomeScrenn(),
-        // Add other routes as needed
-      },
+      home: welcomeScreen(),
+      // routes: {
+      //   AppRouteName.home: (context) => HomeScreen(),
+      //   // Add other routes as needed
+      // },
     );
   }
 }

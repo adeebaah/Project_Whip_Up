@@ -45,11 +45,13 @@ class ApiService {
 //   }
 // }
 
-  Future<Map<String, dynamic>> signup(String email, String password) async {
+  Future<Map<String, dynamic>> signup(
+      String username, String email, String password) async {
     final response = await http.post(
       Uri.parse('http://localhost:8000/signup/'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
+      body: jsonEncode(
+          {'username': username, 'email': email, 'password': password}),
     );
 
     if (response.statusCode == 200) {

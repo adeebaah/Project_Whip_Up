@@ -23,6 +23,7 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   String _email = "";
   String _password = "";
+  String _username = "";
   List<String> errorMessages = [];
 
   @override
@@ -36,7 +37,7 @@ class _BodyState extends State<Body> {
             "SIGNUP",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 20),
           SvgPicture.asset(
             "assets/icons/signup.svg",
             height: size.height * 0.35,
@@ -49,6 +50,16 @@ class _BodyState extends State<Body> {
           //     });
           //   },
           // ),
+          RoundedInputField(
+            hintText: "Username",
+            icon: Icons.person,
+            onChanged: (value) {
+              // Set the username value in a variable
+              setState(() {
+                _username = value;
+              });
+            },
+          ),
           RoundedInputField(
             hintText: "Your Email",
             icon: Icons.email, // This is the missing argument you need to add.
@@ -111,7 +122,8 @@ class _BodyState extends State<Body> {
 
               // If validations pass, proceed to call the API.
               final apiService = ApiService();
-              final response = await apiService.signup(_email, _password);
+              final response =
+                  await apiService.signup(_username, _email, _password);
 
               if (response['message'] == 'User Created') {
                 // Handle successful signup, e.g., navigate to another page or show a success message
