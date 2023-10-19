@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:whip_up/Screens/Login/login_screen.dart';
+
 class VerifyScreen extends StatefulWidget {
   final String userId;
 
@@ -31,6 +33,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
         SnackBar(
           content: Text('OTP verified successfully'),
           backgroundColor: Colors.green, // Set the background color for success
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } else if (response.statusCode == 400) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You have entered the wrong OTP'),
+          backgroundColor: Colors.red,
         ),
       );
     } else {

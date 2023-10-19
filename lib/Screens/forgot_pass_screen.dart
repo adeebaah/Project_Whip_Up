@@ -39,6 +39,13 @@ class ForgotPasswordScreen extends StatelessWidget {
           builder: (context) => ResetPasswordScreen(email: email),
         ),
       );
+    } else if (response.statusCode == 409) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You have not registered with this email.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
