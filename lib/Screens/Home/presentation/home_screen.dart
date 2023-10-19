@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:whip_up/Screens/AddRecipe/add_recipe_screen.dart';
 import 'package:whip_up/core/theme/app_color.dart';
 import 'package:whip_up/Screens/home/model/recipe_model.dart';
 import 'package:whip_up/Screens/home/presentation/widget/recipe_item.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final String username; // Add this line
+  final String userId;
+
+  const HomeScreen({super.key, required this.username, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,7 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                "Hello User,",
+                "Hello $username",
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge
@@ -33,6 +37,26 @@ class HomeScreen extends StatelessWidget {
               child: Text(
                 "What do you want to cook today ?",
                 style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RecipeDetailsPage(userId: userId),
+                        ),
+                      );
+                    },
+                    child: Text('Add Recipe'),
+                  ),
+                ],
               ),
             ),
             Container(

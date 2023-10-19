@@ -3,6 +3,7 @@ import 'package:whip_up/Screens/AddRecipe/add_recipe_screen.dart';
 // import 'package:whip_up/Screens/GetStarted/presentation/get_started_screen.dart';
 import 'package:whip_up/Screens/Home/presentation/home_screen.dart';
 import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
+// import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
 import 'package:whip_up/constants.dart';
 import 'package:whip_up/core/route/app_route_name.dart';
 

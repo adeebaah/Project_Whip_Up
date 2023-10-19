@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:whip_up/Screens/Home/presentation/home_screen.dart';
 import 'package:whip_up/Screens/Login/components/background.dart';
 import 'package:whip_up/Screens/Signup/signup_screen.dart';
 import 'package:whip_up/Screens/forgot_pass_screen.dart';
@@ -11,6 +12,7 @@ import 'package:whip_up/components/rounded_password_field.dart';
 // import 'package:whip_up/constants.dart';
 import 'package:whip_up/Screens/Signup/api_service.dart';
 import 'package:whip_up/Screens/Welcome/welcome_screen.dart';
+import 'package:whip_up/services/auth_service.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -94,11 +96,16 @@ class _BodyState extends State<Body> {
                 print(result);
                 // Assuming 'result' contains a message or status indicating a successful login
                 if (result['message'] == 'Login Successful') {
+                  String userId = result['user_id'];
+                  String userEmail = result['email'];
+                  String userName = result['username'];
+                  AuthService().storeUserData(userId, userEmail, userName);
                   // Navigate to WelcomeScreen after successful login
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => welcomeScreen(),
+                      builder: (context) =>
+                          HomeScreen(username: userName, userId: userId),
                     ),
                   );
                 } else if (result['message'] == 'Please verify your email') {
