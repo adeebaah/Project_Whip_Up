@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'cook_time_input.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_multiselect/flutter_multiselect.dart';
 
 class RecipeStep {
   String description;
@@ -45,6 +46,25 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
   String difficulty = 'easy';
   int selectedHours = 0;
   int selectedMinutes = 0;
+  List<String> selectedTags = [];
+  List<String> availableTags = [
+    'breakfast',
+    'brunch',
+    'lunch',
+    'dinner',
+    'salad',
+    'drink'
+  ];
+  List<String> availableDifficulties = ['easy', 'medium', 'hard'];
+  List<String> availableCuisines = [
+    'Mexican',
+    'Chinese',
+    'Indian',
+    'Italian',
+    'French',
+    'Others'
+  ];
+  String cuisine = 'Mexican';
 
   @override
   Widget build(BuildContext context) {
@@ -76,21 +96,35 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
               },
             ),
             // ... (Difficulty dropdown)
-            DropdownButtonFormField<String>(
-              value: difficulty,
-              onChanged: (newValue) {
-                setState(() {
-                  difficulty = newValue!;
-                });
-              },
-              items: <String>['easy', 'medium', 'hard']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+            Text(
+              'Difficulty',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Wrap(
+              children: availableDifficulties.map((difficultyOption) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      difficulty = difficultyOption;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: difficulty == difficultyOption
+                            ? Colors
+                                .blue // Use a different color for the selected option
+                            : Colors.grey,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(difficultyOption),
+                  ),
                 );
               }).toList(),
-              decoration: InputDecoration(labelText: 'Difficulty'),
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -109,6 +143,58 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                 },
               ),
             ),
+            DropdownButtonFormField<String>(
+              value: cuisine,
+              onChanged: (newValue) {
+                setState(() {
+                  cuisine = newValue!;
+                });
+              },
+              items: availableCuisines
+                  .map<DropdownMenuItem<String>>((cuisineOption) {
+                return DropdownMenuItem<String>(
+                  value: cuisineOption,
+                  child: Text(cuisineOption),
+                );
+              }).toList(),
+              decoration: InputDecoration(labelText: 'Cuisine'),
+            ),
+            Text(
+              'Tags',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Wrap(
+              children: [
+                for (final tag in availableTags)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (selectedTags.contains(tag)) {
+                          selectedTags.remove(tag);
+                        } else {
+                          selectedTags.add(tag);
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: selectedTags.contains(tag)
+                              ? Colors
+                                  .blue // Use a different color for selected tags
+                              : Colors.grey,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(tag),
+                    ),
+                  ),
+              ],
+            ),
+
             // ... (Next button)
             ElevatedButton(
               onPressed: () {
@@ -121,6 +207,8 @@ class _RecipeDetailsPageState extends State<RecipeDetailsPage> {
                       difficulty: difficulty,
                       cookTime: '$selectedHours hours $selectedMinutes minutes',
                       userId: widget.userId,
+                      cuisine: cuisine,
+                      tags: selectedTags,
                     ),
                   ),
                 );
@@ -140,6 +228,8 @@ class IngredientsAndStepsPage extends StatefulWidget {
   final String difficulty;
   final String cookTime;
   final String userId;
+  final String cuisine;
+  final List<String> tags;
 
   IngredientsAndStepsPage({
     required this.title,
@@ -147,6 +237,8 @@ class IngredientsAndStepsPage extends StatefulWidget {
     required this.difficulty,
     required this.cookTime,
     required this.userId,
+    required this.cuisine,
+    required this.tags,
   });
 
   @override
@@ -237,6 +329,8 @@ class _IngredientsAndStepsPageState extends State<IngredientsAndStepsPage> {
                   widget.servings,
                   widget.difficulty,
                   widget.cookTime,
+                  widget.cuisine,
+                  widget.tags,
                   ingredients,
                   steps,
                 );
@@ -305,6 +399,8 @@ class _IngredientsAndStepsPageState extends State<IngredientsAndStepsPage> {
     int servings,
     String difficulty,
     String cookTime,
+    String cuisine,
+    List<String> selectedTags,
     List<RecipeIngredient> ingredients,
     List<RecipeStep> steps,
   ) async {
@@ -316,6 +412,8 @@ class _IngredientsAndStepsPageState extends State<IngredientsAndStepsPage> {
       "servings": servings,
       "difficulty": difficulty,
       "cookTime": cookTime,
+      "cuisine": cuisine,
+      "tags": selectedTags,
       "ingredients":
           ingredients.map((ingredient) => ingredient.toJson()).toList(),
       "steps": steps.map((step) => step.toJson()).toList(),
@@ -331,6 +429,13 @@ class _IngredientsAndStepsPageState extends State<IngredientsAndStepsPage> {
       if (response.statusCode == 200) {
         // Recipe added successfully
         print('Recipe added successfully');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Recipe added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
       } else {
         // Error adding recipe
         print('Error adding recipe. Status code: ${response.statusCode}');
